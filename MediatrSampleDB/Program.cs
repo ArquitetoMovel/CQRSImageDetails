@@ -1,7 +1,8 @@
 ﻿using Autofac;
 using MediatR;
-using MediatrSampleDB.Commands;
-using MediatrSampleDB.Repository;
+using CQRSImageDetails.Commands;
+using CQRSImageDetails.Queries;
+using CQRSImageDetails.Repository;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MediatrSampleDB
+namespace CQRSImageDetails
 {
     class Program
     {
@@ -92,11 +93,22 @@ namespace MediatrSampleDB
             {
                 await mediator.Send<bool>(new Commands.CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
             }
-            // removendo as primeiras 20
-            for (int i = 0; i < 20; i++)
+
+            var q1 = new ImagesDetailsQueries();
+
+            foreach (var item in  await q1.GetImageDetails())
             {
-                await mediator.Send<bool>(new RemoveImageCommand { Id = i });
+                Console.WriteLine(item.Name);
             }
+            var totalDetails = await q1.ImagesDetailsTotal();
+            Console.WriteLine($"Total details => { totalDetails.Total }");
+
+            // zerando a base 
+            foreach (var ids in await q1.GetImageIds())
+            {
+                await mediator.Send<bool>(new RemoveImageCommand { Id = ids.Id });
+            }
+
             crono.Stop();
             Console.WriteLine(crono.ElapsedMilliseconds);
             Console.ReadKey();

@@ -87,6 +87,9 @@
     <Compile Include="Commands\RemoveImageCommandHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\IImagesDetailsQueries.cs" />
+    <Compile Include="Queries\ImageDetailsViewModel.cs" />
+    <Compile Include="Queries\ImagesDetailsQueries.cs" />
     <Compile Include="Repository\RepositoryPostgres.cs" />
   </ItemGroup>
   <ItemGroup>

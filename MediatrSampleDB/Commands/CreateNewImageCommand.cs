@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MediatrSampleDB.Commands
+namespace CQRSImageDetails.Commands
 {
     public class CreateNewImageCommand : IRequest<bool>
     {

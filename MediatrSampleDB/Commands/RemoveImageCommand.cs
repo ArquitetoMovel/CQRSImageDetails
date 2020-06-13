@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MediatrSampleDB.Commands
+namespace CQRSImageDetails.Commands
 {
     public class RemoveImageCommand : IRequest<bool>
     {

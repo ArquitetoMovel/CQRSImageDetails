@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using MediatrSampleDB.Repository;
+using CQRSImageDetails.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MediatrSampleDB.Commands
+namespace CQRSImageDetails.Commands
 {
     public class CreateNewImageCommandHandler : IRequestHandler<CreateNewImageCommand, bool>
     {

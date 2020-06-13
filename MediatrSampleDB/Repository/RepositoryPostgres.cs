@@ -1,4 +1,5 @@
-﻿using MediatrSampleDB.Commands;
+﻿using CQRSImageDetails.Commands;
+using CQRSImageDetails.Queries;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MediatrSampleDB.Repository
+namespace CQRSImageDetails.Repository
 {
     public class RepositoryPostgres 
     {
@@ -45,6 +46,50 @@ namespace MediatrSampleDB.Repository
                 _pgdbConn.Close();
             }
             return commit;
+        }
+
+        public IEnumerable<T> SelectImagesdetails<T>(string query, Func<NpgsqlDataReader, T> resultModel) 
+            where T : GenericImageDetails, new()
+        {
+            _pgdbConn.Open();
+
+            try
+            {
+                using (var cmd = new NpgsqlCommand(query, _pgdbConn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            yield return resultModel(reader);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                _pgdbConn.Close();
+            }
+            
+        
+        }
+
+        public int TotalImagesdetails(string query)
+        {
+            _pgdbConn.Open();
+            try
+            {
+                using (var cmd = new NpgsqlCommand(query, _pgdbConn))
+                {
+                    return Int32.Parse(cmd.ExecuteScalar().ToString());
+                }
+            }
+            finally
+            {
+                _pgdbConn.Close();
+            }
+            
+
         }
 
         public bool InsertImageDetails(CreateNewImageCommand createNewImageCommand)
