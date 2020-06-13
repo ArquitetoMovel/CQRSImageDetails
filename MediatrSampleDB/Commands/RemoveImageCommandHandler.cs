@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 
 namespace MediatrSampleDB.Commands
 {
-    public class CreateNewImageCommandHandler : IRequestHandler<CreateNewImageCommand, bool>
+    public class RemoveImageCommandHandler : IRequestHandler<RemoveImageCommand, bool>
     {
         private readonly RepositoryPostgres _repository;
 
-        public CreateNewImageCommandHandler()
+        public RemoveImageCommandHandler()
         {
             _repository = new RepositoryPostgres();
         }
 
-        public Task<bool> Handle(CreateNewImageCommand request, CancellationToken cancellationToken) =>
+        public Task<bool> Handle(RemoveImageCommand request, CancellationToken cancellationToken) =>
         Task.Run<bool>(() =>
         {
-          return _repository.InsertImageDetails(request);
+            return _repository.DeleteImageDetails(request.Id);
         });
-        
+
     }
 }
