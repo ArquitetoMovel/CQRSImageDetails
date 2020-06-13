@@ -4,6 +4,7 @@ using MediatrSampleDB.Commands;
 using MediatrSampleDB.Repository;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -81,10 +82,12 @@ namespace MediatrSampleDB
         static async Task Main(string[] args)
         {
 
-            var mediator = BuildMediator(new Type[] 
-            { typeof(CreateNewImageCommand), 
+            var mediator = BuildMediator(new Type[]
+            { typeof(CreateNewImageCommand),
                 typeof(RemoveImageCommand)
             });
+            var crono = new Stopwatch();
+            crono.Start();
             foreach (var item in new DirectoryInfo(@"D:\Fotos Pai").GetFiles("*.jpg"))
             {
                 await mediator.Send<bool>(new Commands.CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
@@ -94,7 +97,8 @@ namespace MediatrSampleDB
             {
                 await mediator.Send<bool>(new RemoveImageCommand { Id = i });
             }
-
+            crono.Stop();
+            Console.WriteLine(crono.ElapsedMilliseconds);
             Console.ReadKey();
 
         }
@@ -103,11 +107,22 @@ namespace MediatrSampleDB
         // teste sem mediatr
         //static void Main(string[] args)
         //{
-        //    var repo = new DBPostgres();
+        //    var repo = new RepositoryPostgres();
+        //    var crono = new Stopwatch();
+        //    crono.Start();
         //    foreach (var item in new DirectoryInfo(@"D:\Fotos Pai").GetFiles("*.jpg"))
         //    {
-        //        repo.InsertImages(new Commands.CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
+        //        repo.InsertImageDetails(new Commands.CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
         //    }
+
+        //    for (int i = 0; i < 20; i++)
+        //    {
+        //        repo.DeleteImageDetails(i);
+        //    }
+
+        //    crono.Stop();
+        //    Console.WriteLine(crono.ElapsedMilliseconds);
+        //    Console.ReadKey();
         //}
     }
 }
