@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Commands\CreateNewImageCommand.cs" />
     <Compile Include="Commands\CreateNewImageCommandHandler.cs" />
+    <Compile Include="Infra\CommandEngine.cs" />
     <Compile Include="Infra\ICommand.cs" />
     <Compile Include="Commands\RemoveImageCommand.cs" />
     <Compile Include="Commands\RemoveImageCommandHandler.cs" />

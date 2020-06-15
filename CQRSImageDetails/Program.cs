@@ -17,10 +17,12 @@ namespace CQRSImageDetails
 {
     class Program
     {
-        private static IMediator BuildMediator(Type[] commands)
+        private static CommandEngine BuildMediator(Type[] commands)
         {
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
+
+            builder.RegisterType<CommandEngine>();
 
             var mediatrOpenTypes = new[]
             {
@@ -77,8 +79,9 @@ namespace CQRSImageDetails
             //    .ToList();
 
             var mediator = container.Resolve<IMediator>();
+            var engine = container.Resolve<CommandEngine>();
 
-            return mediator;
+            return engine;
         }
 
         static async Task Main(string[] args)
@@ -88,11 +91,15 @@ namespace CQRSImageDetails
             { typeof(CreateNewImageCommand),
                 typeof(RemoveImageCommand)
             });
+
+
             var crono = new Stopwatch();
             crono.Start();
             foreach (var item in new DirectoryInfo(@"D:\Fotos Pai").GetFiles("*.jpg"))
             {
-                await mediator.Send<CommandResult>(new CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
+                await mediator.Send(new CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName }); 
+                    
+                    //.Send<CommandResult>(new CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
             }
 
             var q1 = new ImagesDetailsQueries();
@@ -107,7 +114,8 @@ namespace CQRSImageDetails
             // zerando a base 
             foreach (var ids in await q1.GetImageIds())
             {
-                await mediator.Send<bool>(new RemoveImageCommand { Id = ids.Id });
+               // await mediator
+                    //.Send<bool>(new RemoveImageCommand { Id = ids.Id });
             }
 
             crono.Stop();
