@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatrSampleDB.Infra;
 
 namespace CQRSImageDetails.Commands
 {
-    public class CreateNewImageCommandHandler : IRequestHandler<CreateNewImageCommand, bool>
+    public class CreateNewImageCommandHandler : CommandHandler<CreateNewImageCommand>
     {
         private readonly RepositoryPostgres _repository;
 
@@ -18,11 +19,16 @@ namespace CQRSImageDetails.Commands
             _repository = new RepositoryPostgres();
         }
 
-        public Task<bool> Handle(CreateNewImageCommand request, CancellationToken cancellationToken) =>
-        Task.Run<bool>(() =>
+        public override Task<CommandResult> Handle(CreateNewImageCommand request, CancellationToken cancellationToken) =>
+        Task.Run<CommandResult>(() =>
         {
-          return _repository.InsertImageDetails(request);
+            var result = new CommandResult
+            {
+                Success = _repository.InsertImageDetails(request)
+            };
+            return result;
         });
-        
+
+       
     }
 }

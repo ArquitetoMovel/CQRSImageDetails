@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using MediatrSampleDB.Infra;
 
 namespace CQRSImageDetails
 {
@@ -91,7 +92,7 @@ namespace CQRSImageDetails
             crono.Start();
             foreach (var item in new DirectoryInfo(@"D:\Fotos Pai").GetFiles("*.jpg"))
             {
-                await mediator.Send<bool>(new Commands.CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
+                await mediator.Send<CommandResult>(new CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
             }
 
             var q1 = new ImagesDetailsQueries();
