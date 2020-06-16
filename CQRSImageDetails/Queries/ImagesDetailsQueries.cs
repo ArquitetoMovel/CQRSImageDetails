@@ -26,13 +26,14 @@ namespace CQRSImageDetails.Queries
             {
                 var imgDetails = new ImageDetails
                 {
-                    Name = reader.GetString(0),
-                    Path = reader.GetString(1)
+                    Id = reader.GetInt32(0),
+                    Name = reader.GetString(1),
+                    Path = reader.GetString(2)
                 };
                 return imgDetails;
             }
 
-            return _repository.SelectImagesdetails<ImageDetails>("SELECT Name, Path FROM tb_images", parseReader);
+            return _repository.SelectImagesdetails<ImageDetails>("SELECT Id, Name, Path FROM tb_images", parseReader);
         });
 
         public Task<IEnumerable<ImagesDetailsIDs>> GetImageIds() =>

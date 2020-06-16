@@ -11,13 +11,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using MediatrSampleDB.Infra;
+using CQRSImageDetails.Infra;
 
 namespace CQRSImageDetails
 {
     class Program
     {
-        private static CommandEngine BuildMediator(Type[] commands)
+        private static CommandEngine UseCommandEngine(Type[] commands)
         {
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
@@ -87,7 +87,7 @@ namespace CQRSImageDetails
         static async Task Main(string[] args)
         {
 
-            var mediator = BuildMediator(new Type[]
+            var commandEngine = UseCommandEngine(new Type[]
             { typeof(CreateNewImageCommand),
                 typeof(RemoveImageCommand)
             });
@@ -95,27 +95,20 @@ namespace CQRSImageDetails
 
             var crono = new Stopwatch();
             crono.Start();
-            foreach (var item in new DirectoryInfo(@"D:\Fotos Pai").GetFiles("*.jpg"))
+            foreach (var item in new DirectoryInfo(@"C:\oppl\a0\O908880\Pictures").GetFiles("*.*"))
             {
-                await mediator.Send(new CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName }); 
-                    
-                    //.Send<CommandResult>(new CreateNewImageCommand { Name = $"{item.Name} - {DateTime.Now}", Path = item.FullName });
+                await commandEngine.Send(new CreateNewImageCommand { Name =item.Name, Path = item.FullName}); 
             }
-
+            
             var q1 = new ImagesDetailsQueries();
+            var totalDetails = await q1.ImagesDetailsTotal();
+            Console.WriteLine($"Total details => { totalDetails.Total }");
+
 
             foreach (var item in  await q1.GetImageDetails())
             {
                 Console.WriteLine(item.Name);
-            }
-            var totalDetails = await q1.ImagesDetailsTotal();
-            Console.WriteLine($"Total details => { totalDetails.Total }");
-
-            // zerando a base 
-            foreach (var ids in await q1.GetImageIds())
-            {
-               // await mediator
-                    //.Send<bool>(new RemoveImageCommand { Id = ids.Id });
+                await commandEngine.Send(new RemoveImageCommand { Id = item.Id }); 
             }
 
             crono.Stop();

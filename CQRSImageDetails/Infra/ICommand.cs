@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MediatrSampleDB.Infra
+namespace CQRSImageDetails.Infra
 {
     public interface ICommand : IRequest<CommandResult>
     {

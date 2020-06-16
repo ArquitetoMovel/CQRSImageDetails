@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MediatrSampleDB.Infra
+namespace CQRSImageDetails.Infra
 {
     public abstract class CommandHandler<T> : IRequestHandler<T, CommandResult> 
         where T : ICommand

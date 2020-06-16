@@ -1,12 +1,7 @@
-﻿using MediatR;
-using CQRSImageDetails.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using MediatrSampleDB.Infra;
+using CQRSImageDetails.Infra;
+using CQRSImageDetails.Repository;
 
 namespace CQRSImageDetails.Commands
 {

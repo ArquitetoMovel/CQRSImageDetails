@@ -49,7 +49,7 @@ namespace CQRSImageDetails.Repository
         }
 
         public IEnumerable<T> SelectImagesdetails<T>(string query, Func<NpgsqlDataReader, T> resultModel) 
-            where T : GenericImageDetails, new()
+            where T : ViewImageDetails, new()
         {
             _pgdbConn.Open();
 

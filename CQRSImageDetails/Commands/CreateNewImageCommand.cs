@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using MediatrSampleDB.Infra;
+using CQRSImageDetails.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;

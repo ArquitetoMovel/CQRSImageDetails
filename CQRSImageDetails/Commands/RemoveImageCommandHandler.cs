@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CQRSImageDetails.Infra;
 
 namespace CQRSImageDetails.Commands
 {
-    public class RemoveImageCommandHandler : IRequestHandler<RemoveImageCommand, bool>
+    public class RemoveImageCommandHandler : CommandHandler<RemoveImageCommand>
     {
         private readonly RepositoryPostgres _repository;
 
@@ -18,10 +19,13 @@ namespace CQRSImageDetails.Commands
             _repository = new RepositoryPostgres();
         }
 
-        public Task<bool> Handle(RemoveImageCommand request, CancellationToken cancellationToken) =>
-        Task.Run<bool>(() =>
+        public override Task<CommandResult> Handle(RemoveImageCommand request, CancellationToken cancellationToken) =>
+        Task.Run<CommandResult>(() =>
         {
-            return _repository.DeleteImageDetails(request.Id);
+            return new CommandResult
+            {
+                Success = _repository.DeleteImageDetails(request.Id)
+            };
         });
 
     }
