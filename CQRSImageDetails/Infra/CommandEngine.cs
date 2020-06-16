@@ -18,9 +18,6 @@ namespace CQRSImageDetails.Infra
             _mediator = mediator;
         }
 
-        public Task<CommandResult> Send(ICommand command)
-        {
-            return _mediator.Send<CommandResult>(command);
-        }
+        public Task<CommandResult> Send(ICommand command) => _mediator.Send<CommandResult>(command);
     }
 }

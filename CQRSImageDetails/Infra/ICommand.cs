@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace CQRSImageDetails.Infra
 {
-    public interface ICommand : IRequest<CommandResult>
-    {
-    }
+    public interface ICommand : IRequest<CommandResult> { }
 
     public class CommandResult
     {

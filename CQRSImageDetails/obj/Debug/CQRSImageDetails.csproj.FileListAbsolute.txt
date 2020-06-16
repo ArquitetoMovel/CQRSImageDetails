@@ -64,4 +64,3 @@ D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.csproj.C
 D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.csproj.CopyComplete
 D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\MediatrSampleDB.exe
 D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\MediatrSampleDB.pdb
-D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.csprojAssemblyReference.cache
