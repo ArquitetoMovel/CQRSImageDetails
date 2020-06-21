@@ -12,52 +12,40 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CQRSImageDetails.Infra;
+using System.Runtime.CompilerServices;
+using System.CodeDom;
+using CQRSImageDetails.Events;
 
 namespace CQRSImageDetails
 {
     class Program
     {
-        private static CommandEngine UseCommandEngine(Type[] commands)
+
+
+        private static void UseServices(Type[] commands,
+                                        Type[] events,
+                                        Action<CommandManager> configureCommandManager,
+                                        Action<EventManager> configureEventManager)
         {
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
+            builder.RegisterType<CommandManager>();
+            builder.RegisterType<EventManager>();
 
-            builder.RegisterType<CommandEngine>();
-
-            var mediatrOpenTypes = new[]
+            void registerType(Assembly assbl, Type t)
             {
-                typeof(IRequestHandler<,>),
-                typeof(INotificationHandler<>),
-            };
-
-            foreach (var mediatrOpenType in mediatrOpenTypes)
-            {
-                foreach (var command in commands)
-                {
-                    builder
-                        .RegisterAssemblyTypes(command.GetTypeInfo().Assembly)
-                        .AsClosedTypesOf(mediatrOpenType)
-                        // when having a single class implementing several handler types
-                        // this call will cause a handler to be called twice
-                        // in general you should try to avoid having a class implementing for instance `IRequestHandler<,>` and `INotificationHandler<>`
-                        // the other option would be to remove this call
-                        // see also https://github.com/jbogard/MediatR/issues/462
-                        .AsImplementedInterfaces();
-                }
+                var registredHandler = builder
+                                        .RegisterAssemblyTypes(assbl);
+                registredHandler.AsClosedTypesOf(t);
+                registredHandler.AsImplementedInterfaces();
             }
 
-            //builder.RegisterInstance(writer).As<TextWriter>();
+            foreach (var commandHandler in commands)
+                registerType(commandHandler.GetTypeInfo().Assembly, typeof(IRequestHandler<,>));
 
-            // It appears Autofac returns the last registered types first
-            //builder.RegisterGeneric(typeof(RequestPostProcessorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
-            //builder.RegisterGeneric(typeof(RequestPreProcessorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
-            //builder.RegisterGeneric(typeof(RequestExceptionActionProcessorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
-            //builder.RegisterGeneric(typeof(RequestExceptionProcessorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
-            //builder.RegisterGeneric(typeof(GenericRequestPreProcessor<>)).As(typeof(IRequestPreProcessor<>));
-            //builder.RegisterGeneric(typeof(GenericRequestPostProcessor<,>)).As(typeof(IRequestPostProcessor<,>));
-            //builder.RegisterGeneric(typeof(GenericPipelineBehavior<,>)).As(typeof(IPipelineBehavior<,>));
-            //builder.RegisterGeneric(typeof(ConstrainedRequestPostProcessor<,>)).As(typeof(IRequestPostProcessor<,>));
-            //builder.RegisterGeneric(typeof(ConstrainedPingedHandler<>)).As(typeof(INotificationHandler<>));
+
+            foreach (var eventHandler in events)
+                registerType(eventHandler.GetTypeInfo().Assembly, typeof(INotificationHandler<>));
 
             builder.Register<ServiceFactory>(ctx =>
             {
@@ -66,49 +54,60 @@ namespace CQRSImageDetails
             });
 
             var container = builder.Build();
+            container.Resolve<IMediator>();
 
-            // The below returns:
-            //  - RequestPreProcessorBehavior
-            //  - RequestPostProcessorBehavior
-            //  - GenericPipelineBehavior
-            //  - RequestExceptionActionProcessorBehavior
-            //  - RequestExceptionProcessorBehavior
+            if (configureCommandManager != null)
+                configureCommandManager.Invoke(container.Resolve<CommandManager>());
 
-            //var behaviors = container
-            //    .Resolve<IEnumerable<IPipelineBehavior<Ping, Pong>>>()
-            //    .ToList();
+            if (configureEventManager != null)
+                configureEventManager.Invoke(container.Resolve<EventManager>());
 
-            var mediator = container.Resolve<IMediator>();
-            var engine = container.Resolve<CommandEngine>();
-
-            return engine;
         }
+
+
 
         static async Task Main(string[] args)
         {
+            CommandManager managerCommandInstance = null;
+            EventManager managerEventInstance = null;
 
-            var commandEngine = UseCommandEngine(new Type[]
-            { typeof(CreateNewImageCommand),
-                typeof(RemoveImageCommand)
-            });
-
+            UseServices(
+                        new Type[]
+                        {
+                            typeof(CreateNewImageCommand),
+                            typeof(RemoveImageCommand)
+                        },
+                        new Type[]
+                        {
+                            typeof(ImageCreatedEvent)
+                        },
+                            (CommandManager instance) => { managerCommandInstance = instance; },
+                            (EventManager instance) => { managerEventInstance = instance; }
+                        );
 
             var crono = new Stopwatch();
             crono.Start();
-            foreach (var item in new DirectoryInfo(@"C:\oppl\a0\O908880\Pictures").GetFiles("*.*"))
+            int count = 0;
+            await managerEventInstance.Publish(new ImageCreatedEvent { Name = "X" });
+            foreach (var item in new DirectoryInfo(@"C:\Users\alexa\OneDrive\Pictures").GetFiles("*.*"))
             {
-                await commandEngine.Send(new CreateNewImageCommand { Name =item.Name, Path = item.FullName}); 
+                count++;
+                var result = await managerCommandInstance.Send(new CreateNewImageCommand { Name = $"[{count}] {item.Name}", Path = item.FullName });
+
+                await managerEventInstance.Publish(new ImageCreatedEvent { Name = $"[{count}] {item.Name}" });
+
+                await managerCommandInstance.Send(new RemoveImageCommand { Id = result.Id });
             }
-            
+
             var q1 = new ImagesDetailsQueries();
             var totalDetails = await q1.ImagesDetailsTotal();
             Console.WriteLine($"Total details => { totalDetails.Total }");
 
 
-            foreach (var item in  await q1.GetImageDetails())
+            foreach (var item in await q1.GetImageDetails())
             {
                 Console.WriteLine(item.Name);
-                await commandEngine.Send(new RemoveImageCommand { Id = item.Id }); 
+                // await commandEngine.Send(new RemoveImageCommand { Id = item.Id }); 
             }
 
             crono.Stop();

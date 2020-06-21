@@ -91,7 +91,7 @@ namespace CQRSImageDetails.Repository
             
 
         }
-
+        public int ImageID { get;  private set; }
         public bool InsertImageDetails(CreateNewImageCommand createNewImageCommand)
         {
  
@@ -119,6 +119,8 @@ namespace CQRSImageDetails.Repository
                 }
                 try
                 {
+                    ImageID = nextId;
+
                     // Insert some data
                     using (var cmd = new NpgsqlCommand("INSERT INTO tb_images (id,name,path) VALUES (@id,@name,@path)", _pgdbConn))
                     {

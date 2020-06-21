@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSImageDetails.Infra;
 using CQRSImageDetails.Repository;
@@ -17,13 +18,14 @@ namespace CQRSImageDetails.Commands
         public override Task<CommandResult> Handle(CreateNewImageCommand request, CancellationToken cancellationToken) =>
         Task.Run<CommandResult>(() =>
         {
+            Console.WriteLine($"I GO TO CREATE  {request.Name} IN {DateTime.Now}");
             var result = new CommandResult
             {
-                Success = _repository.InsertImageDetails(request)
+                Success = _repository.InsertImageDetails(request),
+                Id = _repository.ImageID
             };
-            return result;
-        });
 
-       
+            return result;
+        });      
     }
 }

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace CQRSImageDetails.Infra
 {
-    public class CommandEngine
+    public class CommandManager
     {
         private readonly IMediator _mediator;
 
-        public CommandEngine(IMediator mediator)
+        public CommandManager(IMediator mediator)
         {
             _mediator = mediator;
         }

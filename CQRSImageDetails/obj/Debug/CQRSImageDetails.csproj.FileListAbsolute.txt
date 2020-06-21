@@ -31,9 +31,6 @@ D:\Develop\MediatrSampleDB\MediatrSampleDB\obj\Debug\CQRSImageDetails.csproj.Cor
 D:\Develop\MediatrSampleDB\MediatrSampleDB\obj\Debug\CQRSImageDetails.csproj.CopyComplete
 D:\Develop\MediatrSampleDB\MediatrSampleDB\obj\Debug\MediatrSampleDB.exe
 D:\Develop\MediatrSampleDB\MediatrSampleDB\obj\Debug\MediatrSampleDB.pdb
-D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\MediatrSampleDB.exe.config
-D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\MediatrSampleDB.exe
-D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\MediatrSampleDB.pdb
 D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\Autofac.dll
 D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\MediatR.dll
 D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
@@ -62,5 +59,8 @@ D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\System.Threading.Tasks.Ex
 D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\System.ValueTuple.xml
 D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.csproj.CoreCompileInputs.cache
 D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.csproj.CopyComplete
-D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\MediatrSampleDB.exe
-D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\MediatrSampleDB.pdb
+D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\CQRSImageDetails.exe.config
+D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\CQRSImageDetails.exe
+D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\CQRSImageDetails.pdb
+D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.exe
+D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.pdb
