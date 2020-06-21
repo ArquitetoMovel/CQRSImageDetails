@@ -21,7 +21,6 @@ namespace CQRSImageDetails
     class Program
     {
 
-
         private static void UseServices(Type[] commands,
                                         Type[] events,
                                         Action<CommandManager> configureCommandManager,
@@ -32,20 +31,19 @@ namespace CQRSImageDetails
             builder.RegisterType<CommandManager>();
             builder.RegisterType<EventManager>();
 
-            void registerType(Assembly assbl, Type t)
+            void registerHandler(Assembly assemblyHandler, Type typeHandler)
             {
                 var registredHandler = builder
-                                        .RegisterAssemblyTypes(assbl);
-                registredHandler.AsClosedTypesOf(t);
+                                        .RegisterAssemblyTypes(assemblyHandler);
+                registredHandler.AsClosedTypesOf(typeHandler);
                 registredHandler.AsImplementedInterfaces();
             }
 
             foreach (var commandHandler in commands)
-                registerType(commandHandler.GetTypeInfo().Assembly, typeof(IRequestHandler<,>));
-
+                registerHandler(commandHandler.GetTypeInfo().Assembly, typeof(IRequestHandler<,>));
 
             foreach (var eventHandler in events)
-                registerType(eventHandler.GetTypeInfo().Assembly, typeof(INotificationHandler<>));
+                registerHandler(eventHandler.GetTypeInfo().Assembly, typeof(INotificationHandler<>));
 
             builder.Register<ServiceFactory>(ctx =>
             {
@@ -88,8 +86,8 @@ namespace CQRSImageDetails
             var crono = new Stopwatch();
             crono.Start();
             int count = 0;
-            await managerEventInstance.Publish(new ImageCreatedEvent { Name = "X" });
-            foreach (var item in new DirectoryInfo(@"C:\Users\alexa\OneDrive\Pictures").GetFiles("*.*"))
+
+            foreach (var item in new DirectoryInfo(@"YourPath").GetFiles("*.*"))
             {
                 count++;
                 var result = await managerCommandInstance.Send(new CreateNewImageCommand { Name = $"[{count}] {item.Name}", Path = item.FullName });
