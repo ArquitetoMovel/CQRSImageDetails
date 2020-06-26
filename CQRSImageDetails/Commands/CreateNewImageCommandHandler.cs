@@ -6,7 +6,7 @@ using CQRSImageDetails.Repository;
 
 namespace CQRSImageDetails.Commands
 {
-    public class CreateNewImageCommandHandler : CommandHandler<CreateNewImageCommand>
+    public class CreateNewImageCommandHandler : CommandHandler<CreateNewImageCommand, CreateNewImageResult>
     {
         private readonly RepositoryPostgres _repository;
 
@@ -15,16 +15,14 @@ namespace CQRSImageDetails.Commands
             _repository = new RepositoryPostgres();
         }
 
-        public override Task<CommandResult> Handle(CreateNewImageCommand request, CancellationToken cancellationToken) =>
-        Task.Run<CommandResult>(() =>
+        public override Task<CreateNewImageResult> Handle(CreateNewImageCommand request, CancellationToken cancellationToken) =>
+        Task.Run<CreateNewImageResult>(() =>
         {
             Console.WriteLine($"I GO TO CREATE  {request.Name} IN {DateTime.Now}");
-            var result = new CommandResult
+            var result = new CreateNewImageResult
             {
-                Success = _repository.InsertImageDetails(request),
-                Id = _repository.ImageID
+                Id = _repository.InsertImageDetails(request) ? _repository.ImageID : 0
             };
-
             return result;
         });      
     }

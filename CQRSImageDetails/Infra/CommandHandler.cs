@@ -11,11 +11,16 @@ namespace CQRSImageDetails.Infra
     public abstract class CommandHandler<T> : IRequestHandler<T, CommandResult> 
         where T : ICommand
     {
-
         Task<CommandResult> IRequestHandler<T, CommandResult>.Handle(T request, CancellationToken cancellationToken) =>
         Handle(request, cancellationToken);
        
-        public abstract Task<CommandResult> Handle(T command, CancellationToken cancellationToken);
-        
+        public abstract Task<CommandResult> Handle(T command, CancellationToken cancellationToken);   
+    }
+
+    public abstract class CommandHandler<T, R> : IRequestHandler<T, R>
+        where T : ICommand<R>
+        where R : IResult
+    {
+        public abstract Task<R> Handle(T request, CancellationToken cancellationToken);
     }
 }

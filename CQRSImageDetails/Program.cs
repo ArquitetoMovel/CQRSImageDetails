@@ -2,25 +2,20 @@
 using MediatR;
 using CQRSImageDetails.Commands;
 using CQRSImageDetails.Queries;
-using CQRSImageDetails.Repository;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using CQRSImageDetails.Infra;
-using System.Runtime.CompilerServices;
-using System.CodeDom;
 using CQRSImageDetails.Events;
+using System.Collections;
+using System.CodeDom;
 
 namespace CQRSImageDetails
 {
     class Program
     {
-
         private static void UseServices(Type[] commands,
                                         Type[] events,
                                         Action<CommandManager> configureCommandManager,
@@ -50,6 +45,7 @@ namespace CQRSImageDetails
                 var c = ctx.Resolve<IComponentContext>();
                 return t => c.Resolve(t);
             });
+
 
             var container = builder.Build();
             container.Resolve<IMediator>();
@@ -87,9 +83,10 @@ namespace CQRSImageDetails
             crono.Start();
             int count = 0;
 
-            foreach (var item in new DirectoryInfo(@"YourPath").GetFiles("*.*"))
+            foreach (var item in new DirectoryInfo(@"C:\Users\alexa\OneDrive\Pictures\2016").GetFiles("*.*"))
             {
                 count++;
+
                 var result = await managerCommandInstance.Send(new CreateNewImageCommand { Name = $"[{count}] {item.Name}", Path = item.FullName });
 
                 await managerEventInstance.Publish(new ImageCreatedEvent { Name = $"[{count}] {item.Name}" });
@@ -105,7 +102,6 @@ namespace CQRSImageDetails
             foreach (var item in await q1.GetImageDetails())
             {
                 Console.WriteLine(item.Name);
-                // await commandEngine.Send(new RemoveImageCommand { Id = item.Id }); 
             }
 
             crono.Stop();

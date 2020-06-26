@@ -9,10 +9,14 @@ using System.Threading.Tasks;
 
 namespace CQRSImageDetails.Commands
 {
-    public class CreateNewImageCommand : ICommand
+    public class CreateNewImageCommand : ICommand<CreateNewImageResult>
     {
         public string Name { get; set; }
         public string Path { get; set; }
     }
 
+    public class CreateNewImageResult : IResult
+    {
+        public int Id { get; set; }
+    }
 }

@@ -44,6 +44,7 @@ namespace CQRSImageDetails.Repository
             finally
             {
                 _pgdbConn.Close();
+              //  Task.Delay(5000);
             }
             return commit;
         }

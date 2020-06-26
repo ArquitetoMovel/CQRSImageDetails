@@ -1,10 +1,4 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CQRSImageDetails.Infra
@@ -19,5 +13,10 @@ namespace CQRSImageDetails.Infra
         }
 
         public Task<CommandResult> Send(ICommand command) => _mediator.Send<CommandResult>(command);
+
+        public Task<R> Send<R>(ICommand<R> command) where R : IResult
+        {
+            return _mediator.Send<R>(command);
+        }
     }
 }
