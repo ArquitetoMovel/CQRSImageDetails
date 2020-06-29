@@ -1,12 +1,8 @@
-﻿using CQRSImageDetails.Commands;
-using CQRSImageDetails.Queries;
+﻿using System;
 using Npgsql;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+using CQRSImageDetails.Commands;
+using CQRSImageDetails.Queries;
 
 namespace CQRSImageDetails.Repository
 {
@@ -95,7 +91,7 @@ namespace CQRSImageDetails.Repository
         public int ImageID { get;  private set; }
         public bool InsertImageDetails(CreateNewImageCommand createNewImageCommand)
         {
- 
+
             var commit = true;
             try
             {
@@ -106,9 +102,9 @@ namespace CQRSImageDetails.Repository
                 {
                     try
                     {
-                        nextId = Int32.Parse(cmd.ExecuteScalar().ToString())+1;
+                        nextId = Int32.Parse(cmd.ExecuteScalar().ToString()) + 1;
                     }
-                    catch(NpgsqlException)
+                    catch (NpgsqlException)
                     {
                         commit = false;
                     }
@@ -116,7 +112,7 @@ namespace CQRSImageDetails.Repository
                     {
                         nextId = 1;
                     }
-                  
+
                 }
                 try
                 {
@@ -135,7 +131,7 @@ namespace CQRSImageDetails.Repository
                 {
                     commit = false;
                 }
-                
+
             }
             finally
             {

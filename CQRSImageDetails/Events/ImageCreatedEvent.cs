@@ -1,4 +1,4 @@
-﻿using CQRSImageDetails.Infra;
+﻿using ExeCutor;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CQRSImageDetails.Infra;
 using CQRSImageDetails.Repository;
+using ExeCutor;
 
 namespace CQRSImageDetails.Commands
 {

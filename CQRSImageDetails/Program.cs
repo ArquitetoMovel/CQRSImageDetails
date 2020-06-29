@@ -1,16 +1,14 @@
 ﻿using Autofac;
 using MediatR;
-using CQRSImageDetails.Commands;
 using CQRSImageDetails.Queries;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using CQRSImageDetails.Infra;
+using ExeCutor;
+using CQRSImageDetails.Commands;
 using CQRSImageDetails.Events;
-using System.Collections;
-using System.CodeDom;
 
 namespace CQRSImageDetails
 {
@@ -18,13 +16,11 @@ namespace CQRSImageDetails
     {
         private static void UseServices(Type[] commands,
                                         Type[] events,
-                                        Action<CommandManager> configureCommandManager,
-                                        Action<EventManager> configureEventManager)
+                                        Action<Executor> configureExecutor)
         {
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
-            builder.RegisterType<CommandManager>();
-            builder.RegisterType<EventManager>();
+            builder.RegisterType<Executor>();
 
             void registerHandler(Assembly assemblyHandler, Type typeHandler)
             {
@@ -50,11 +46,8 @@ namespace CQRSImageDetails
             var container = builder.Build();
             container.Resolve<IMediator>();
 
-            if (configureCommandManager != null)
-                configureCommandManager.Invoke(container.Resolve<CommandManager>());
-
-            if (configureEventManager != null)
-                configureEventManager.Invoke(container.Resolve<EventManager>());
+            if (configureExecutor != null)
+                configureExecutor.Invoke(container.Resolve<Executor>());
 
         }
 
@@ -62,8 +55,7 @@ namespace CQRSImageDetails
 
         static async Task Main(string[] args)
         {
-            CommandManager managerCommandInstance = null;
-            EventManager managerEventInstance = null;
+            Executor executorInstance = null;
 
             UseServices(
                         new Type[]
@@ -75,8 +67,7 @@ namespace CQRSImageDetails
                         {
                             typeof(ImageCreatedEvent)
                         },
-                            (CommandManager instance) => { managerCommandInstance = instance; },
-                            (EventManager instance) => { managerEventInstance = instance; }
+                            (Executor instance) => { executorInstance = instance; }
                         );
 
             var crono = new Stopwatch();
@@ -87,25 +78,29 @@ namespace CQRSImageDetails
             {
                 count++;
 
-                var result = await managerCommandInstance.Send(new CreateNewImageCommand { Name = $"[{count}] {item.Name}", Path = item.FullName });
+                var result = await executorInstance.Send(new CreateNewImageCommand
+                {
+                    Name = $"[{count}] {item.Name}",
+                    Path = item.FullName
+                });
 
-                await managerEventInstance.Publish(new ImageCreatedEvent { Name = $"[{count}] {item.Name}" });
+                await executorInstance.Publish(new ImageCreatedEvent { Name = $"[{count}] {item.Name}" });
 
-                await managerCommandInstance.Send(new RemoveImageCommand { Id = result.Id });
+                await executorInstance.Send(new RemoveImageCommand { Id = result.Id });
             }
 
             var q1 = new ImagesDetailsQueries();
-            var totalDetails = await q1.ImagesDetailsTotal();
+            var totalDetails =  await q1.ImagesDetailsTotal();
             Console.WriteLine($"Total details => { totalDetails.Total }");
 
 
-            foreach (var item in await q1.GetImageDetails())
-            {
-                Console.WriteLine(item.Name);
-            }
+            //foreach (var item in await q1.GetImageDetails())
+            //{
+            //    Console.WriteLine(item.Name);
+            //}
 
             crono.Stop();
-            Console.WriteLine(crono.ElapsedMilliseconds);
+            Console.WriteLine($" Total in seconds => {(crono.ElapsedMilliseconds / 1_000)}");
             Console.ReadKey();
 
         }

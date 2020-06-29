@@ -1,12 +1,7 @@
-﻿using MediatR;
-using CQRSImageDetails.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using CQRSImageDetails.Repository;
+using ExeCutor;
 using System.Threading;
 using System.Threading.Tasks;
-using CQRSImageDetails.Infra;
 
 namespace CQRSImageDetails.Commands
 {
@@ -19,14 +14,13 @@ namespace CQRSImageDetails.Commands
             _repository = new RepositoryPostgres();
         }
 
-        public override Task<CommandResult> Handle(RemoveImageCommand request, CancellationToken cancellationToken) =>
-        Task.Run<CommandResult>(() =>
+        public override Task<CommandResponse> HandleExecution(RemoveImageCommand command, CancellationToken cancellationToken) =>
+        Task.Run<CommandResponse>(() =>
         {
-            return new CommandResult
+            return new CommandResponse
             {
-                Success = _repository.DeleteImageDetails(request.Id)
+                OK = _repository.DeleteImageDetails(command.Id)
             };
         });
-
     }
 }

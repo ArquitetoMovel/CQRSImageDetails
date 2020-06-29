@@ -1,11 +1,4 @@
-﻿using MediatR;
-using CQRSImageDetails.Infra;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ExeCutor;
 
 namespace CQRSImageDetails.Commands
 {
@@ -15,7 +8,7 @@ namespace CQRSImageDetails.Commands
         public string Path { get; set; }
     }
 
-    public class CreateNewImageResult : IResult
+    public class CreateNewImageResult : ICommandResponse
     {
         public int Id { get; set; }
     }

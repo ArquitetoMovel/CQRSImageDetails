@@ -64,4 +64,4 @@ D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\CQRSImageDetails.exe
 D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\CQRSImageDetails.pdb
 D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.exe
 D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.pdb
-D:\Develop\CQRSImageDetails\CQRSImageDetails\obj\Debug\CQRSImageDetails.csprojAssemblyReference.cache
+D:\Develop\CQRSImageDetails\CQRSImageDetails\bin\Debug\ExeCutor.dll
